@@ -2,7 +2,6 @@ require_relative "../config/environment.rb"
 require 'active_support/inflector'
 
 class InteractiveRecord
-
   def self.table_name
     self.to_s.downcase.pluralize
   end
@@ -49,8 +48,14 @@ class InteractiveRecord
   end
 
   def self.find_by_name(name)
-    sql = "SELECT * FROM #{self.table_name} WHERE name = '?'"
-    DB[:conn].execute(sql, name)
+    sql = "SELECT * FROM #{self.table_name} WHERE name = '#{name}'"
+    DB[:conn].execute(sql)
   end
 
+  def self.find_by(attr_hash)
+    column=attr_hash.keys[0].to_s
+    value = attr_hash[attr_hash.keys[0]]
+    sql="SELECT * FROM #{self.table_name} WHERE #{column} = '#{value}'"
+    DB[:conn].execute(sql)
+  end
 end
